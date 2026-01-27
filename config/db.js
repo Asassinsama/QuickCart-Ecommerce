@@ -14,8 +14,12 @@ async function connectDB() {
     const opts = {
       bufferCommands: false,
     };
-    cached.promise = mongoose.connect(`${process.env.MONGODB_URI}/quickcart`, opts).then( mongoose => {
+    cached.promise = mongoose.connect(`${process.env.MONGODB_URI}/QuickCart`, opts).then( mongoose => {
+      console.log(' MongoDB Connected to:', mongoose.connection.db.databaseName);
       return mongoose;
+    }).catch(err => {
+      console.error('❌ MongoDB Connection Error:', err);
+      throw err;
     });
   }
 

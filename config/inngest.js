@@ -1,11 +1,12 @@
 import { Inngest } from "inngest";
-import connectDB from "./db";
+import connectDB from "@/config/db";
+import User from "@/models/user";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "quickcart-next" });
 
 // Inngest Function to save user data to a database
-export const saveUserData = inngest.createFunction(
+export const syncUserCreation = inngest.createFunction(
     {
         id: 'sync-user-form-clerk'
     },
@@ -37,7 +38,7 @@ export const syncUserUpdation = inngest.createFunction(
             image_url: image_url
         }
         await connectDB()
-        await userData.findIdAndUpdate(id, userData)
+        await User.findByIdAndUpdate(id, userData)
     }
 
 )
@@ -55,4 +56,4 @@ export const syncUserDeletion = inngest.createFunction(
         await connectDB()
         await User.findByIdAndDelete(id)
     }
-)
+);
