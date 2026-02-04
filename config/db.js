@@ -18,7 +18,7 @@ async function connectDB() {
       console.log(' MongoDB Connected to:', mongoose.connection.db.databaseName);
       return mongoose;
     }).catch(err => {
-      console.error('❌ MongoDB Connection Error:', err);
+      console.error(' MongoDB Connection Error:', err);
       throw err;
     });
   }
