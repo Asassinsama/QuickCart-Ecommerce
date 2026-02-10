@@ -10,24 +10,25 @@ export async function POST(request) {
         const { userId } = await auth();
         const { address, items } = await request.json();
 
-        if (!address || !items || items.length === 0) {
-            return NextResponse.json({ success: false, message: 'Address and items are required to create an order' });
+        if (!address || items.length === 0) {
+            return NextResponse.json({ success: false, message: 'Invalid order' });
         }
 
         // Caalculate amount
         const amount = await items.reduce(async (acc, item) => {
             const product = await Product.findById(item.product);
-            return acc + (product.offerPrice * item.quantity);
+            return await acc + product.offerPrice * item.quantity;
         }, 0);
+
+       
 
         await inngest.send({
             name: 'order/created',
             data: {
                 userId,
+                address,
                 items,
                 amount: amount + Math.floor(amount * 0.02), // Including 2% tax
-                address,
-                status: 'Order Placed',
                 date: Date.now()
             }
         });
