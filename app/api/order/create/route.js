@@ -1,3 +1,4 @@
+import connectDB from "@/config/db"; // Add this import change
 import { inngest } from "@/config/inngest";
 import Product from "@/models/Product";
 import User from "@/models/user";
@@ -7,6 +8,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
     try {
+         await connectDB // Connect to DB first change
+
         const { userId } = await auth();
         const { address, items } = await request.json();
 
@@ -15,10 +18,17 @@ export async function POST(request) {
         }
 
         // Caalculate amount
-        const amount = await items.reduce(async (acc, item) => {
+        /*const amount = await items.reduce(async (acc, item) => {
             const product = await Product.findById(item.product);
             return await acc + product.offerPrice * item.quantity;
-        }, 0);
+        }, 0);*/
+        let amount = 0;
+        for (const item of items) {
+            const product = await Product.findById(item.product);
+            if (product) {
+                amount += product.offerPrice * item.quantity;
+            }
+        }
 
        
 
